@@ -22,7 +22,7 @@ namespace PokeApi_Console_Application
             }
             else if (type.Equals("name"))
             {
-                RequestPokemonByName();
+                await RequestPokemonByName();
             }
             
         }
@@ -68,9 +68,43 @@ namespace PokeApi_Console_Application
             }
         }
 
-        public static void RequestPokemonByName()
+        public static async Task RequestPokemonByName()
         {
-            throw new NotImplementedException();
+            PokemonClient client = new PokemonClient();
+            Console.Write("What is the name of the pokemon you are attempting to search for? ");
+            string search = Console.ReadLine().ToLower();
+            try
+            {
+                PokemonResponse pr = await client.GetPokemon(search);
+                Console.WriteLine($"{pr.name} | Pokedex No: {pr.id}");
+                Console.WriteLine($"{pr.name}'s Typing's");
+                Console.WriteLine("=====================");
+                foreach (var types in pr.types)
+                {
+                    Console.WriteLine(types.type.name);
+                }
+                Console.WriteLine();
+                Console.WriteLine($"{pr.name}'s Abilites's");
+                Console.WriteLine("=======================");
+                foreach (var abilities in pr.abilities)
+                {
+                    if (!abilities.is_hidden)
+                    {
+                        Console.WriteLine("Normal Ability: " + abilities.ability.name);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Hidden Ability: " + abilities.ability.name);
+                    }
+                }
+                Console.ReadKey();
+            }
+            catch
+            {
+                Console.WriteLine("Sorry, but the pokemon you attempted to search for does not exist or spelling error's were made.");
+                Console.Write("Press Any Key To Exit....");
+                Console.ReadKey();
+            }
         }
     }
 }

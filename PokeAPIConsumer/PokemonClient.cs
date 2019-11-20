@@ -52,7 +52,7 @@ namespace PokeAPIConsumer
         public async Task<PokemonResponse> GetPokemon(string name)
         {
             HttpResponseMessage resp =
-                    await Client.GetAsync($"{name}");
+                    await Client.GetAsync($"pokemon/{name}");
             if (resp.IsSuccessStatusCode)
             {
                 string data = await resp.Content.ReadAsStringAsync();
