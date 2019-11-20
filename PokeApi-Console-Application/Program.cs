@@ -1,22 +1,24 @@
 ﻿using PokeAPIConsumer;
 using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PokeApi_Console_Application
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            RequestPokemon();
+            await RequestPokemon();
         }
 
-        public static void RequestPokemon()
+        public static async Task RequestPokemon()
         {
             Console.Write("Would you like to search a pokemon by ID or NAME? ");
             string type = Console.ReadLine().ToLower();
             if (type.Equals("id"))
             {
-                RequestPokemonById();
+                await RequestPokemonById();
             }
             else if (type.Equals("name"))
             {
@@ -25,7 +27,7 @@ namespace PokeApi_Console_Application
             
         }
 
-        public static async void RequestPokemonById()
+        public static async Task RequestPokemonById()
         {
             PokemonClient client = new PokemonClient();
             int id;
@@ -35,7 +37,27 @@ namespace PokeApi_Console_Application
             {
                 id = Convert.ToInt32(searchtype);
                 PokemonResponse pr = await client.GetPokemon(id);
-                Console.Write($"{pr.name} | {pr.types} | {pr.abilities}");
+                Console.WriteLine($"{pr.name} | Pokedex No: {id}");
+                Console.WriteLine($"{pr.name}'s Typing's");
+                Console.WriteLine("=====================");
+                foreach (var types in pr.types)
+                {
+                    Console.WriteLine(types.type.name);
+                }
+                Console.WriteLine();
+                Console.WriteLine($"{pr.name}'s Abilites's");
+                Console.WriteLine("=======================");
+                foreach (var abilities in pr.abilities)
+                {
+                    if (!abilities.is_hidden)
+                    {
+                        Console.WriteLine("Normal Ability: " + abilities.ability.name);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Hidden Ability: " + abilities.ability.name);
+                    }
+                }
                 Console.ReadKey();
             }
             catch
@@ -46,7 +68,7 @@ namespace PokeApi_Console_Application
             }
         }
 
-        public static async void RequestPokemonByName()
+        public static void RequestPokemonByName()
         {
             throw new NotImplementedException();
         }

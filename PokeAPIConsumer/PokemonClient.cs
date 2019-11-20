@@ -20,17 +20,27 @@ namespace PokeAPIConsumer
         /// <param name="id">The Id of the pokemon</param>
         public async Task<PokemonResponse> GetPokemon(int id)
         {
-            HttpResponseMessage resp =
-                await Client.GetAsync($"pokemon/{id}");
-            if (resp.IsSuccessStatusCode)
+            try
             {
-                string data = await resp.Content.ReadAsStringAsync();
-                PokemonResponse pr = JsonConvert.DeserializeObject<PokemonResponse>(data);
+                HttpResponseMessage resp =
+                    await Client.GetAsync($"pokemon/{id}");
+                if (resp.IsSuccessStatusCode)
+                {
+                    string data = await resp.Content.ReadAsStringAsync();
+                    PokemonResponse pr = JsonConvert.DeserializeObject<PokemonResponse>(data);
 
-                return pr;
+                    return pr;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            else
+            catch (Exception e)
             {
+#if DEBUG
+                Console.WriteLine(e.GetType().ToString());
+#endif
                 return null;
             }
         }
